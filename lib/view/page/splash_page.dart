@@ -1,0 +1,46 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_architecture_samples/model/holder/event_send_holder.dart';
+import 'package:flutter_architecture_samples/model/holder/shared_depository.dart';
+import 'package:flutter_architecture_samples/utils/system_util.dart';
+import 'package:flutter_architecture_samples/view/page/page_state.dart';
+import 'package:rxdart/rxdart.dart';
+
+import 'home_page.dart';
+
+class SplashPage extends StatefulWidget {
+  @override
+  State createState() => SplashState();
+}
+
+class SplashState extends PageState<SplashPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    bindSub(
+        Observable.zip2(
+                Stream.fromFuture(
+                    Future.delayed(const Duration(milliseconds: 1000))),
+                Stream.fromFuture(SharedDepository().initShared()),
+                (a, b) => b)
+            .map((shared) => shared.themeColor)
+            .map((color) =>
+                EventSendHolder().sendEvent(tag: "themeChange", event: color))
+            .listen((_) => push(context, page: HomePage(), replace: true)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      child: Scaffold(
+        body: Image.asset(
+          "images/splash.png",
+          fit: isAndroid ? BoxFit.fill : BoxFit.fitHeight,
+          width: double.infinity,
+          height: double.infinity,
+        ),
+      ),
+      onWillPop: () async => false,
+    );
+  }
+}
