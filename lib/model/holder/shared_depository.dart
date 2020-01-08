@@ -62,7 +62,6 @@ class SharedDepository {
   Future<bool> setPageModules(List<PageModule> modules) async =>
       await _prefs.setString("pageModules2", jsonEncode(modules));
 
-
   Future<bool> setHammerShare(bool value) async =>
       await _prefs.setBool("hammerShare", value);
 
