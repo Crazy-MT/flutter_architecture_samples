@@ -10,9 +10,15 @@ class ReadService extends Service {
 
   Future<List<ReadData>> getReadDatas(
       {@required String lastUrl, @required int page}) async {
+    var url = "/xiandu/$lastUrl/page/$page";
+    if(page == 0) {
+      url = "/xiandu/$lastUrl/page";
+    }
+    if(lastUrl == "wow") {
+      url = "/xiandu";
+    }
     final response =
-        await dio.get("/xiandu/$lastUrl/page/$page", cancelToken: cancelToken);
-
+        await dio.get(url, cancelToken: cancelToken);
     // 解析xml
     final document = parse(response.data);
     final total = document.getElementsByClassName("xiandu_items").first;
